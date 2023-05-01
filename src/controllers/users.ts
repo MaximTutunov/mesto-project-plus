@@ -82,16 +82,16 @@ export const updateProfile = async (req: ICustomRequest, res: Response) => {
         .send({ message: "Ошибка при обновлении профиля" });
     }
 
-  if (error instanceof Error && error.name === "UserNotFound") {
+    if (error instanceof Error && error.name === "UserNotFound") {
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .send({ message: "Отсутствует пользователь с данным id" });
+    }
     return res
-      .status(STATUS_CODES.NOT_FOUND)
-      .send({ message: "Отсутствует пользователь с данным id" });
+      .status(STATUS_CODES.DEFAULT_ERROR)
+      .send({ message: "Ошибка сервера" });
   }
-  return res
-    .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: "Ошибка сервера" });
-}
-}
+};
 
 export const updateAvatar = async (req: ICustomRequest, res: Response) => {
   const { avatar } = req.body;
@@ -121,13 +121,13 @@ export const updateAvatar = async (req: ICustomRequest, res: Response) => {
         .send({ message: "Ошибка при обновлении профиля" });
     }
 
-  if (error instanceof Error && error.name === "UserNotFound") {
+    if (error instanceof Error && error.name === "UserNotFound") {
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .send({ message: "Отсутствует пользователь с данным id" });
+    }
     return res
-      .status(STATUS_CODES.NOT_FOUND)
-      .send({ message: "Отсутствует пользователь с данным id" });
+      .status(STATUS_CODES.DEFAULT_ERROR)
+      .send({ message: "Ошибка сервера" });
   }
-  return res
-    .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: "Ошибка сервера" });
-}
-}
+};

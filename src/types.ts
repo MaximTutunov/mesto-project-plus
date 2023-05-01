@@ -1,7 +1,7 @@
-import {Request} from 'express';
+import { Request } from "express";
 
-export interface ICustomRequest extends Request{
-  user?:{
-    _id:string;
-  }
+export interface ICustomRequest extends Request {
+  user?: {
+    _id: string;
+  };
 }

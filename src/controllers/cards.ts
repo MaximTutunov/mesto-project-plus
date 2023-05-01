@@ -88,19 +88,22 @@ export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
         .send({ message: "Неправильные данные для лайка" });
     }
 
-  if (error instanceof Error && error.name === "CardNotFound") {
+    if (error instanceof Error && error.name === "CardNotFound") {
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .send({ message: "карточка с данным Id не существует" });
+    }
+
     return res
-      .status(STATUS_CODES.NOT_FOUND)
-      .send({ message: "карточка с данным Id не существует" });
+      .status(STATUS_CODES.DEFAULT_ERROR)
+      .send({ message: "ошибка сервера" });
   }
+};
 
-  return res
-    .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: "ошибка сервера" });
-}
-}
-
-export const deleteLikeFromCard = async (req: ICustomRequest, res: Response) => {
+export const deleteLikeFromCard = async (
+  req: ICustomRequest,
+  res: Response
+) => {
   const { cardId } = req.params;
   const userId = req.user?._id as unknown as mongoose.Schema.Types.ObjectId;
 
@@ -127,14 +130,14 @@ export const deleteLikeFromCard = async (req: ICustomRequest, res: Response) => 
         .send({ message: "Неправильные данные для удаления лайка" });
     }
 
-  if (error instanceof Error && error.name === "CardNotFound") {
-    return res
-      .status(STATUS_CODES.NOT_FOUND)
-      .send({ message: "карточка с данным Id не существует" });
-  }
+    if (error instanceof Error && error.name === "CardNotFound") {
+      return res
+        .status(STATUS_CODES.NOT_FOUND)
+        .send({ message: "карточка с данным Id не существует" });
+    }
 
-  return res
-    .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: "ошибка сервера" });
-}
-}
+    return res
+      .status(STATUS_CODES.DEFAULT_ERROR)
+      .send({ message: "ошибка сервера" });
+  }
+};
