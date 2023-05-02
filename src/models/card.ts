@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 interface ICard {
   name: string;
@@ -11,22 +11,23 @@ interface ICard {
 const cardSchema = new mongoose.Schema<ICard>({
   name: {
     type: String,
-    required: [true, "Введите обязательное поле - название изображения"],
-    minlength: [2, "введите название изображения не менее 2-х символов"],
-    maxlength: [30, "введите название изображения не более 30-ти символов"],
+    required: [true, 'Введите обязательное поле - название изображения'],
+    minlength: [2, 'введите название изображения не менее 2-х символов'],
+    maxlength: [30, 'введите название изображения не более 30-ти символов'],
   },
   link: {
     type: String,
-    required: [true, "Введите обязательное поле - ссылка на изображение"],
+    required: [true, 'Введите обязательное поле - ссылка на изображение'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-    required: [true, "введите обязательное поле id автора"],
+    ref: 'user',
+    required: [true, 'введите обязательное поле id автора'],
   },
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
       default: [],
     },
   ],
@@ -37,4 +38,4 @@ const cardSchema = new mongoose.Schema<ICard>({
   },
 });
 
-export default mongoose.model<ICard>("card", cardSchema);
+export default mongoose.model<ICard>('card', cardSchema);
