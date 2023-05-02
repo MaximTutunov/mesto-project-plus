@@ -55,7 +55,7 @@ export const deleteCard = async (req: Request, res: Response) => {
     if (error instanceof Error && error.name === 'CastError') {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Пользователь по указанному _id не найден' });
+        .send({ message: '_id карточки некорректный' });
     }
   }
   return res
@@ -81,15 +81,10 @@ export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
     }
     return res.status(STATUS_CODES.OK).send(card);
   } catch (error) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Неправильные данные для лайка' });
-    }
     if (error instanceof Error && error.name === 'CastError') {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Пользователь по указанному _id не найден' });
+        .send({ message: '_id карточки некорректный' });
     }
     if (error instanceof Error && error.name === 'CardNotFound') {
       return res
@@ -124,15 +119,10 @@ export const deleteLikeFromCard = async (
     }
     return res.status(STATUS_CODES.OK).send(card);
   } catch (error) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Неправильные данные для удаления лайка' });
-    }
     if (error instanceof Error && error.name === 'CastError') {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Пользователь по указанному _id не найден' });
+        .send({ message: '_id карточки некорректный' });
     }
 
     if (error instanceof Error && error.name === 'CardNotFound') {
