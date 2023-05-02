@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import mongoose from "mongoose";
-import { ICustomRequest } from "../types";
-import STATUS_CODES from "../utils/constants";
-import User from "../models/user";
+import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { ICustomRequest } from '../types';
+import STATUS_CODES from '../utils/constants';
+import User from '../models/user';
 
 export const getUsers = async (_req: Request, res: Response) => {
   try {
@@ -11,7 +11,7 @@ export const getUsers = async (_req: Request, res: Response) => {
   } catch {
     return res
       .status(STATUS_CODES.DEFAULT_ERROR)
-      .send({ message: "Ошибка сервера" });
+      .send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -24,12 +24,12 @@ export const createUser = async (req: Request, res: Response) => {
     if (error instanceof mongoose.Error.ValidationError) {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: "Ошибка при создании пользователя" });
+        .send({ message: 'Ошибка при создании пользователя' });
     }
   }
   return res
     .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: "Ошибка сервера" });
+    .send({ message: 'Ошибка сервера' });
 };
 
 export const getUserById = async (req: Request, res: Response) => {
@@ -37,21 +37,26 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      const error = new Error("Отсутствует пользователь с данным id");
-      error.name = "UserNotFound";
+      const error = new Error('Отсутствует пользователь с данным id');
+      error.name = 'UserNotFound';
       throw error;
     }
     return res.status(STATUS_CODES.OK).send(user);
   } catch (error) {
-    if (error instanceof Error && error.name === "UserNotFound") {
+    if (error instanceof Error && error.name === 'UserNotFound') {
       return res
         .status(STATUS_CODES.NOT_FOUND)
-        .send({ message: "Отсутствует пользователь с данным id" });
+        .send({ message: 'Отсутствует пользователь с данным id' });
+    }
+    if (error instanceof Error && error.name === 'CastError') {
+      return res
+        .status(STATUS_CODES.BAD_REQUEST)
+        .send({ message: 'Пользователь по указанному _id не найден' });
     }
   }
   return res
     .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: "Ошибка сервера" });
+    .send({ message: 'Ошибка сервера' });
 };
 
 export const updateProfile = async (req: ICustomRequest, res: Response) => {
@@ -60,17 +65,17 @@ export const updateProfile = async (req: ICustomRequest, res: Response) => {
 
   try {
     if (!userId) {
-      throw new Error("Пользователя с данным id не существует");
+      throw new Error('Пользователя с данным id не существует');
     }
     const user = await User.findByIdAndUpdate(
       userId,
       { name, about },
-      { new: true }
+      { new: true },
     );
 
     if (!user) {
-      const error = new Error("Отсутствует пользователь с данным id");
-      error.name = "UserNotFound";
+      const error = new Error('Отсутствует пользователь с данным id');
+      error.name = 'UserNotFound';
       throw error;
     }
 
@@ -79,17 +84,17 @@ export const updateProfile = async (req: ICustomRequest, res: Response) => {
     if (error instanceof mongoose.Error.ValidationError) {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: "Ошибка при обновлении профиля" });
+        .send({ message: 'Ошибка при обновлении профиля' });
     }
 
-    if (error instanceof Error && error.name === "UserNotFound") {
+    if (error instanceof Error && error.name === 'UserNotFound') {
       return res
         .status(STATUS_CODES.NOT_FOUND)
-        .send({ message: "Отсутствует пользователь с данным id" });
+        .send({ message: 'Отсутствует пользователь с данным id' });
     }
     return res
       .status(STATUS_CODES.DEFAULT_ERROR)
-      .send({ message: "Ошибка сервера" });
+      .send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -99,17 +104,17 @@ export const updateAvatar = async (req: ICustomRequest, res: Response) => {
 
   try {
     if (!userId) {
-      throw new Error("Пользователя с данным id не существует");
+      throw new Error('Пользователя с данным id не существует');
     }
     const user = await User.findByIdAndUpdate(
       userId,
       { avatar },
-      { new: true }
+      { new: true },
     );
 
     if (!user) {
-      const error = new Error("Отсутствует пользователь с данным id");
-      error.name = "UserNotFound";
+      const error = new Error('Отсутствует пользователь с данным id');
+      error.name = 'UserNotFound';
       throw error;
     }
 
@@ -118,16 +123,16 @@ export const updateAvatar = async (req: ICustomRequest, res: Response) => {
     if (error instanceof mongoose.Error.ValidationError) {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: "Ошибка при обновлении профиля" });
+        .send({ message: 'Ошибка при обновлении профиля' });
     }
 
-    if (error instanceof Error && error.name === "UserNotFound") {
+    if (error instanceof Error && error.name === 'UserNotFound') {
       return res
         .status(STATUS_CODES.NOT_FOUND)
-        .send({ message: "Отсутствует пользователь с данным id" });
+        .send({ message: 'Отсутствует пользователь с данным id' });
     }
     return res
       .status(STATUS_CODES.DEFAULT_ERROR)
-      .send({ message: "Ошибка сервера" });
+      .send({ message: 'Ошибка сервера' });
   }
 };
