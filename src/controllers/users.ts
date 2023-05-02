@@ -48,6 +48,11 @@ export const getUserById = async (req: Request, res: Response) => {
         .status(STATUS_CODES.NOT_FOUND)
         .send({ message: 'Отсутствует пользователь с данным id' });
     }
+    if (error instanceof Error && error.name === 'CastError') {
+      return res
+        .status(STATUS_CODES.BAD_REQUEST)
+        .send({ message: 'Пользователь по указанному _id не найден' });
+    }
   }
   return res
     .status(STATUS_CODES.DEFAULT_ERROR)

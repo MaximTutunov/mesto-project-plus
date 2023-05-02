@@ -52,6 +52,11 @@ export const deleteCard = async (req: Request, res: Response) => {
         .status(STATUS_CODES.NOT_FOUND)
         .send({ message: 'Карточка с данным id отсутствует' });
     }
+    if (error instanceof Error && error.name === 'CastError') {
+      return res
+        .status(STATUS_CODES.BAD_REQUEST)
+        .send({ message: 'Пользователь по указанному _id не найден' });
+    }
   }
   return res
     .status(STATUS_CODES.DEFAULT_ERROR)
@@ -81,7 +86,11 @@ export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
         .status(STATUS_CODES.BAD_REQUEST)
         .send({ message: 'Неправильные данные для лайка' });
     }
-
+    if (error instanceof Error && error.name === 'CastError') {
+      return res
+        .status(STATUS_CODES.BAD_REQUEST)
+        .send({ message: 'Пользователь по указанному _id не найден' });
+    }
     if (error instanceof Error && error.name === 'CardNotFound') {
       return res
         .status(STATUS_CODES.NOT_FOUND)
@@ -119,6 +128,11 @@ export const deleteLikeFromCard = async (
       return res
         .status(STATUS_CODES.BAD_REQUEST)
         .send({ message: 'Неправильные данные для удаления лайка' });
+    }
+    if (error instanceof Error && error.name === 'CastError') {
+      return res
+        .status(STATUS_CODES.BAD_REQUEST)
+        .send({ message: 'Пользователь по указанному _id не найден' });
     }
 
     if (error instanceof Error && error.name === 'CardNotFound') {

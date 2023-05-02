@@ -1,7 +1,5 @@
-import express from 'express';
 import mongoose from 'mongoose';
-import { NextFunction, Request, Response } from 'express';
-import STATUS_CODES from './utils/constants';
+import express, { Request, Response } from 'express';
 import { ICustomRequest } from './types';
 import { usersRouter, cardsRouter } from './routes';
 
@@ -24,9 +22,6 @@ app.use((req: ICustomRequest, _res, next) => {
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
-/*app.use('/', (req: Request, res: Response,next: NextFunction)=>{next(new Error(`${STATUS_CODES.NOT_FOUND} данный адрес не существует`))
-});*/
-app.use('/', (req: Request, res: Response, next: NextFunction)=>{res.status(404).send({ message: 'Запрашиваемый ресурс не найден' })})
+app.use('/', (req: Request, res: Response) => { res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }); });
 
-console.log(PORT)
 app.listen(PORT);
