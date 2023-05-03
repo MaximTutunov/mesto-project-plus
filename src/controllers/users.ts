@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { ICustomRequest } from '../types';
 import STATUS_CODES from '../utils/constants';
 import User from '../models/user';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export const getUsers = async (_req: Request, res: Response) => {
   try {
@@ -14,6 +16,33 @@ export const getUsers = async (_req: Request, res: Response) => {
       .send({ message: 'Ошибка сервера' });
   }
 };
+
+
+export const login = async (req: Request, res: Response, next:NextFunction) =>{
+  const{ email, password } = req.body;
+  const {JWT_SECRET = 'dev-secret'} =process.env;
+
+  try{
+    const user = await User.findOne({email}).select('+password');
+    if(!user) {
+      throw new AuthError('Необходима авторизация')
+    }
+
+    const isMatched = await bcrypt.compare(password, user.password);
+    if(!isMatched){
+      throw new AuthError('Необходима авторизация')
+    }
+    return res.send({
+      token: jwt.sign({_id:user._id}, JWT_SECRET,{expiresIn:'7d'});
+    })
+
+
+  }catch (error){
+    return next(error)
+  }
+
+  }
+
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, about, avatar, email, password } = req.body;
