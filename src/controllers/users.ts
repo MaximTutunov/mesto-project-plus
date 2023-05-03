@@ -26,11 +26,11 @@ export const createUser = async (req: Request, res: Response) => {
         .status(STATUS_CODES.BAD_REQUEST)
         .send({ message: 'Ошибка при создании пользователя' });
     }
-  }
-  return res
+    return res
     .status(STATUS_CODES.DEFAULT_ERROR)
     .send({ message: 'Ошибка сервера' });
-};
+  }
+  };
 
 export const getUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
@@ -51,18 +51,17 @@ export const getUserById = async (req: Request, res: Response) => {
     if (error instanceof Error && error.name === 'CastError') {
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Пользователь по указанному _id не найден' });
+        .send({ message: '_id карточки некорректный' });
     }
-  }
-  return res
+    return res
     .status(STATUS_CODES.DEFAULT_ERROR)
     .send({ message: 'Ошибка сервера' });
-};
+  }
+  };
 
 export const updateProfile = async (req: ICustomRequest, res: Response) => {
   const { name, about } = req.body;
   const userId = req.user?._id;
-
   try {
     if (!userId) {
       throw new Error('Пользователя с данным id не существует');
@@ -101,7 +100,6 @@ export const updateProfile = async (req: ICustomRequest, res: Response) => {
 export const updateAvatar = async (req: ICustomRequest, res: Response) => {
   const { avatar } = req.body;
   const userId = req.user?._id;
-
   try {
     if (!userId) {
       throw new Error('Пользователя с данным id не существует');
