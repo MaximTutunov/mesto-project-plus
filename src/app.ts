@@ -3,6 +3,9 @@ import express, { Request, Response } from 'express';
 import { ICustomRequest } from './types';
 import { usersRouter, cardsRouter } from './routes';
 import STATUS_CODES from './utils/constants';
+import {
+  login, createUser
+} from './controllers/users';
 
 const PORT = 3000;
 const MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb';
@@ -20,6 +23,8 @@ app.use((req: ICustomRequest, _res, next) => {
 
   next();
 });
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
