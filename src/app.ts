@@ -17,13 +17,7 @@ app.use(express.json());
 
 mongoose.connect(MONGO_URL);
 
-app.use((req: ICustomRequest, _res, next) => {
-  req.user = {
-    _id: '644fa9d3349470c8c792bc6f',
-  };
 
-  next();
-});
 app.post('/signin', login);
 app.post('/signup', createUser);
 
