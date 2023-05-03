@@ -27,15 +27,14 @@ export const createCard = async (req: ICustomRequest, res: Response) => {
         .status(STATUS_CODES.BAD_REQUEST)
         .send({ message: 'Неверные данные при обновлении профиля' });
     }
-  }
-  return res
+    return res
     .status(STATUS_CODES.DEFAULT_ERROR)
     .send({ message: 'Ошибка сервера' });
+  }
 };
 
 export const deleteCard = async (req: Request, res: Response) => {
   const { cardId } = req.params;
-
   try {
     const card = await Card.findByIdAndDelete(cardId);
 
@@ -57,10 +56,10 @@ export const deleteCard = async (req: Request, res: Response) => {
         .status(STATUS_CODES.BAD_REQUEST)
         .send({ message: '_id карточки некорректный' });
     }
-  }
-  return res
+    return res
     .status(STATUS_CODES.DEFAULT_ERROR)
     .send({ message: 'Ошибка сервера' });
+  }
 };
 
 export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
@@ -91,7 +90,6 @@ export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
         .status(STATUS_CODES.NOT_FOUND)
         .send({ message: 'карточка с данным Id не существует' });
     }
-
     return res
       .status(STATUS_CODES.DEFAULT_ERROR)
       .send({ message: 'ошибка сервера' });
