@@ -1,9 +1,12 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
 
 interface IUser {
   name: string;
   about: string;
   avatar: string;
+  email: string;
+  password: string;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -22,6 +25,19 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: true,
   },
+  email:{
+    type:String,
+    required:[true, 'Пропущено обязательное поле - электронная почта'],
+    validate: {
+      validator: (value:string)=>validator.isEmail(value),
+      message: 'неправильный формат электронной почты',
+    }
+  },
+  password:{
+    type: String,
+    required: [true, 'Пропущено обязательное поле -пароль'],
+    select: false,
+  }
 });
 
 export default mongoose.model<IUser>('user', userSchema);
