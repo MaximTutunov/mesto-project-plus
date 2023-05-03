@@ -17,6 +17,17 @@ export const getUsers = async (_req: Request, res: Response) => {
   }
 };
 
+export const getCurrentUser = async (req: ICustomRequest, res: Response, next: NextFunction,) => {
+ const userId = req.user?._id;
+
+  try {
+    const user = await User.findById(userId).orFail(new NotFoundError('Пользователь не найден'));
+    return res.status(STATUS_CODES.OK).send(user);
+  } catch (error){
+    return next(error)
+  }
+};
+
 
 export const login = async (req: Request, res: Response, next:NextFunction) =>{
   const{ email, password } = req.body;

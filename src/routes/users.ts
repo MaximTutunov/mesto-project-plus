@@ -6,6 +6,7 @@ import {
   updateProfile,
   updateAvatar,
   login,
+  getCurrentUser
 } from '../controllers/users';
 
 const router = Router();
@@ -13,6 +14,7 @@ router.get('/', getUsers);
 router.post('/signin', login);
 router.post('/signup', createUser);
 router.get('/:userId', getUserById);
+router.get('/me', getCurrentUser);
 router.patch('/me', updateProfile);
 router.patch('/me/avatar', updateAvatar);
 

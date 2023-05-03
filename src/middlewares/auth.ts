@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import { NextFunction, Response } from 'express';
+import { ICustomRequest } from '../types';
 
-
-export default async (req, _res:Response, next:NextFunction)=>{
+export default async (req: ICustomRequest, _res:Response, next:NextFunction)=>{
   const {authorization} = req.headers;
   const {JWT_SECRET='dev-secret'} =process.env;
   if(!authorization || !authorization.startsWith('Bearer')){
