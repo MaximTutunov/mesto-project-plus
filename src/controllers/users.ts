@@ -16,7 +16,7 @@ export const getUsers = async (_req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
   try {
     const user = await User.create({ name, about, avatar });
     return res.status(STATUS_CODES.OK).send(user);
