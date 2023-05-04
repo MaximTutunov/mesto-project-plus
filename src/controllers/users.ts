@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import { ICustomRequest } from '../types';
+import { ICustomRequest, IMongooseError } from '../types';
 import STATUS_CODES from '../utils/constants';
 import User from '../models/user';
 import jwt from 'jsonwebtoken';

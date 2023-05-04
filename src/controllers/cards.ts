@@ -4,6 +4,7 @@ import Card from '../models/card';
 import { ICustomRequest } from '../types';
 import STATUS_CODES from '../utils/constants';
 import user from 'models/user';
+import { composeErrorMessage } from '../utils/helpers';
 
 export const getCards = async (_req: Request, res: Response) => {
   try {

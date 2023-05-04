@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import { NextFunction, Response } from 'express';
-import { ICustomRequest } from '../types';
+import { ICustomRequest, ITokenData } from '../types';
 
 export default async (req: ICustomRequest, _res:Response, next:NextFunction)=>{
   const {authorization} = req.headers;
