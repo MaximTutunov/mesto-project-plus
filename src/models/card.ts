@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { urlValidation } from '../utils/helpers';
 
 interface ICard {
   name: string;
@@ -18,6 +19,9 @@ const cardSchema = new mongoose.Schema<ICard>({
   link: {
     type: String,
     required: [true, 'Введите обязательное поле - ссылка на изображение'],
+    validate: {validator: urlValidation,
+    message: 'Неправильный формат ссылки на изображение'}
+
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

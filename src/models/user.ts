@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { urlValidation } from '../utils/helpers';
 import validator from 'validator';
 
 interface IUser {
@@ -26,6 +27,10 @@ const userSchema = new mongoose.Schema<IUser>({
   avatar: {
     type: String,
     required: true,
+    validate: {
+      validator: urlValidation,
+      message: 'Неправильный формат ссылки на изображение',
+    },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email:{

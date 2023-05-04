@@ -8,14 +8,18 @@ import {
   login,
   getCurrentUser
 } from '../controllers/users';
+import {
+  validateUserIdParam,
+  validateUpdateProfileRequest,
+  validateUpdateAvatarRequest,
+} from '../middlewares/validation';
 
 const router = Router();
 router.get('/', getUsers);
-router.post('/signin', login);
-router.post('/signup', createUser);
-router.get('/:userId', getUserById);
+
+router.get('/:userId', validateUserIdParam, getUserById);
 router.get('/me', getCurrentUser);
-router.patch('/me', updateProfile);
-router.patch('/me/avatar', updateAvatar);
+router.patch('/me', validateUpdateProfileRequest, updateProfile);
+router.patch('/me/avatar', validateUpdateAvatarRequest, updateAvatar);
 
 export default router;

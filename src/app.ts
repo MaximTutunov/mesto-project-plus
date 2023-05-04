@@ -11,6 +11,10 @@ import winston from 'winston';
 import expressWinston from 'express-winston';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import errorHandler from './middlewares/error-handler';
+import {
+  validateLoginRequest,
+  validateCreateUserRequest,
+} from './middlewares/validation';
 
 
 const { errors } = require('celebrate');
@@ -20,13 +24,13 @@ const MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb';
 const app = express();
 
 app.use(express.json());
-
+mongoose.set('runValidators', true);
 mongoose.connect(MONGO_URL);
 
 app.use(requestLogger)
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validateLoginRequest, login);
+app.post('/signup', validateCreateUserRequest, createUser);
 
 app.use(auth);
 
@@ -36,7 +40,5 @@ app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler)
-
-/*app.use('/', (req: Request, res: Response) => { res.status(STATUS_CODES.NOT_FOUND).send({ message: 'Запрашиваемый ресурс не найден' }); });*/
 
 app.listen(PORT, () => {});
