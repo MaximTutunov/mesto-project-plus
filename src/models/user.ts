@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { urlValidation } from '../utils/helpers';
 import validator from 'validator';
+import { urlValidation } from '../utils/helpers';
 
 interface IUser {
   name: string;
@@ -33,19 +33,20 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
-  email:{
-    type:String,
-    required:[true, 'Пропущено обязательное поле - электронная почта'],
+  email: {
+    type: String,
+    required: [true, 'Пропущено обязательное поле - электронная почта'],
+    unique: true,
     validate: {
-      validator: (value:string)=>validator.isEmail(value),
+      validator: (value:string) => validator.isEmail(value),
       message: 'неправильный формат электронной почты',
-    }
+    },
   },
-  password:{
+  password: {
     type: String,
     required: [true, 'Пропущено обязательное поле -пароль'],
     select: false,
-  }
+  },
 });
 
 export default mongoose.model<IUser>('user', userSchema);

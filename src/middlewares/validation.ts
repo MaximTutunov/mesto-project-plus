@@ -1,28 +1,28 @@
 import { TJoiHelpersObject } from '../types';
 import { urlValidation } from '../utils/helpers';
 
-const {celebrate, Joi} = require('celebrate');
-const {ObjectId} = require('mongoose').Types;
+const { celebrate, Joi } = require('celebrate');
+const { ObjectId } = require('mongoose').Types;
 
 export const validateCreateCardRequest = celebrate({
   body: Joi.object().keys({
-    name:Joi.string().required().min(2).max(30).messages({
-      'string.min': 'Название изображения должно содержать не менее 2 символов',
+    name: Joi.string().required().min(2).max(30)
+      .messages({
+        'string.min': 'Название изображения должно содержать не менее 2 символов',
         'string.max': 'Название изображения должно содержать не более 30 символов',
         'any.required': 'Обязательное поле',
-    }),
-    link: Joi.string().required().custom((value:string, helpers:TJoiHelpersObject)=>{
-      if(urlValidation(value)){
-        return value
+      }),
+    link: Joi.string().required().custom((value:string, helpers:TJoiHelpersObject) => {
+      if (urlValidation(value)) {
+        return value;
       }
       return helpers.message('Неправильный формат ссылки на изображение');
-      })
+    })
       .messages({
         'any.required': 'Обязательное поле',
       }),
-    })
-  })
-
+  }),
+});
 
 export const validateUserIdParam = celebrate({
   params: Joi.object().keys({
@@ -34,7 +34,6 @@ export const validateUserIdParam = celebrate({
         if (ObjectId.isValid(value)) {
           return value;
         }
-
         return helpers.message('Невалидный id пользователя');
       }),
   }),

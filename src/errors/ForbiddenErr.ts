@@ -3,7 +3,9 @@ import { IHttpException } from '../types';
 
 class ForbiddenErr implements IHttpException {
   statusCode: number;
+
   name: string;
+
   message: string;
 
   constructor(message: string) {

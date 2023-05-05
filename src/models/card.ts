@@ -19,8 +19,10 @@ const cardSchema = new mongoose.Schema<ICard>({
   link: {
     type: String,
     required: [true, 'Введите обязательное поле - ссылка на изображение'],
-    validate: {validator: urlValidation,
-    message: 'Неправильный формат ссылки на изображение'}
+    validate: {
+      validator: urlValidation,
+      message: 'Неправильный формат ссылки на изображение',
+    },
 
   },
   owner: {
@@ -31,7 +33,7 @@ const cardSchema = new mongoose.Schema<ICard>({
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      /* ref: 'user', */
       default: [],
     },
   ],

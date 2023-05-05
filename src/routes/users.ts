@@ -2,12 +2,11 @@ import { Router } from 'express';
 import {
   getUsers,
   getUserById,
-  createUser,
   updateProfile,
   updateAvatar,
-  login,
-  getCurrentUser
+  getCurrentUser,
 } from '../controllers/users';
+
 import {
   validateUserIdParam,
   validateUpdateProfileRequest,
@@ -15,10 +14,10 @@ import {
 } from '../middlewares/validation';
 
 const router = Router();
-router.get('/', getUsers);
 
-router.get('/:userId', validateUserIdParam, getUserById);
+router.get('/', getUsers);
 router.get('/me', getCurrentUser);
+router.get('/:userId', validateUserIdParam, getUserById);
 router.patch('/me', validateUpdateProfileRequest, updateProfile);
 router.patch('/me/avatar', validateUpdateAvatarRequest, updateAvatar);
 
