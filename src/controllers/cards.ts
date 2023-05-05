@@ -1,21 +1,25 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Card from '../models/card';
 import { ICustomRequest } from '../types';
 import STATUS_CODES from '../utils/constants';
+import { composeErrorMessage } from '../utils/helpers';
+import {
+  NotFoundErr,
+  ForbiddenErr,
+  ValidationErr,
+} from '../errors';
 
-export const getCards = async (_req: Request, res: Response) => {
+export const getCards = async (_req: Request, res: Response, next:NextFunction) => {
   try {
-    const cards = await Card.find({}).populate(['owner', 'likes']);
+    const cards = await Card.find({}).populate('owner', ['name', 'about']);
     return res.status(STATUS_CODES.OK).send(cards);
-  } catch {
-    return res
-      .status(STATUS_CODES.DEFAULT_ERROR)
-      .send({ message: 'Ошибка на сервере' });
+  } catch (error) {
+    return next(error);
   }
 };
 
-export const createCard = async (req: ICustomRequest, res: Response) => {
+export const createCard = async (req: ICustomRequest, res: Response, next: NextFunction) => {
   const { name, link } = req.body;
   const userId = req.user?._id;
   try {
@@ -23,46 +27,32 @@ export const createCard = async (req: ICustomRequest, res: Response) => {
     return res.status(STATUS_CODES.OK).send(card);
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: 'Неверные данные при обновлении профиля' });
+      const message = composeErrorMessage(error);
+      return next(new ValidationErr(message));
     }
-    return res
-    .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: 'Ошибка сервера' });
+    return next(error);
   }
 };
 
-export const deleteCard = async (req: Request, res: Response) => {
+export const deleteCard = async (req: ICustomRequest, res: Response, next:NextFunction) => {
   const { cardId } = req.params;
+  const userId = req.user?._id;
   try {
-    const card = await Card.findByIdAndDelete(cardId);
+    const card = await Card.findById(cardId).populate({ path: 'owner', match: { _id: userId } }).orFail(new NotFoundErr('Карточка с таким id не найдена'));
 
-    if (!card) {
-      const error = new Error('Карточка с данным id отсутствует');
-      error.name = 'CardNotFound';
-      throw error;
+    if (!card.owner) {
+      throw new ForbiddenErr('Карточка с таким id принадлежит другому пользователю');
     }
+
+    await Card.findByIdAndDelete(cardId);
 
     return res.status(STATUS_CODES.OK).send({ message: 'Карточка удалена' });
   } catch (error) {
-    if (error instanceof Error && error.name === 'CardNotFound') {
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .send({ message: 'Карточка с данным id отсутствует' });
-    }
-    if (error instanceof Error && error.name === 'CastError') {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: '_id карточки некорректный' });
-    }
-    return res
-    .status(STATUS_CODES.DEFAULT_ERROR)
-    .send({ message: 'Ошибка сервера' });
+    return next(error);
   }
 };
 
-export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
+export const addLikeToCard = async (req: ICustomRequest, res: Response, next: NextFunction) => {
   const { cardId } = req.params;
   const userId = req.user?._id;
 
@@ -71,34 +61,23 @@ export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
       cardId,
       { $addToSet: { likes: userId } },
       { new: true },
-    );
+    ).orFail(new NotFoundErr('Карточка с таким id не найдена'));
 
-    if (!card) {
-      const error = new Error('карточка с данным Id отстутствует');
-      error.name = 'CardNotFound';
-      throw error;
-    }
     return res.status(STATUS_CODES.OK).send(card);
   } catch (error) {
-    if (error instanceof Error && error.name === 'CastError') {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: '_id карточки некорректный' });
+    if (error instanceof mongoose.Error.ValidationError) {
+      const message = composeErrorMessage(error);
+      return next(new ValidationErr(message));
     }
-    if (error instanceof Error && error.name === 'CardNotFound') {
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .send({ message: 'карточка с данным Id не существует' });
-    }
-    return res
-      .status(STATUS_CODES.DEFAULT_ERROR)
-      .send({ message: 'ошибка сервера' });
+
+    return next(error);
   }
 };
 
 export const deleteLikeFromCard = async (
   req: ICustomRequest,
   res: Response,
+  next: NextFunction,
 ) => {
   const { cardId } = req.params;
   const userId = req.user?._id as unknown as mongoose.Schema.Types.ObjectId;
@@ -108,29 +87,15 @@ export const deleteLikeFromCard = async (
       cardId,
       { $pull: { likes: userId } },
       { new: true },
-    );
+    ).orFail(new NotFoundErr('Карточка с таким id не найдена'));
 
-    if (!card) {
-      const error = new Error('карточка с данным Id отстутствует');
-      error.name = 'CardNotFound';
-      throw error;
-    }
     return res.status(STATUS_CODES.OK).send(card);
   } catch (error) {
-    if (error instanceof Error && error.name === 'CastError') {
-      return res
-        .status(STATUS_CODES.BAD_REQUEST)
-        .send({ message: '_id карточки некорректный' });
+    if (error instanceof mongoose.Error.ValidationError) {
+      const message = composeErrorMessage(error);
+      return next(new ValidationErr(message));
     }
 
-    if (error instanceof Error && error.name === 'CardNotFound') {
-      return res
-        .status(STATUS_CODES.NOT_FOUND)
-        .send({ message: 'карточка с данным Id не существует' });
-    }
-
-    return res
-      .status(STATUS_CODES.DEFAULT_ERROR)
-      .send({ message: 'ошибка сервера' });
+    return next(error);
   }
 };
